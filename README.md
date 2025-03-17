@@ -4,4 +4,4 @@
 
 link to assignment: https://datascience4psych.github.io/DataScience4Psych/lab09.html
 
-Plotting regressions
+Exploring a dataset and plotting regressions
