@@ -1,29 +1,84 @@
 ---
 title: "Lab 09 - Grading the professor, Pt. 1"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Benjamin Egan"
+date: "03/17/25"
 output: github_document
 ---
 
-## Load Packages and Data
+Here is the link to the assignment page: https://datascience4psych.github.io/DataScience4Psych/lab09.html. This includes the relevant information for the assignment alongside required questions I needed to answer.
 
-```{r load-packages, message=FALSE}
-library(tidyverse) 
+```{r load-packages, message=FALSE, warning = FALSE, echo = FALSE}
+library(tidyverse)
+library(ggplot2)
 library(tidymodels)
 library(openintro)
+library(moments)
 ```
 
-## Exercise 1
-
-*Provide your answer here.*  
-Add code chunks as needed. Don't forget to label your code chunks.
+# Part 1 - Exploratory Data Analysis
 
 
-```{r exercise1_code}
-# Add your R code here
+
+```{r score distribution, message = FALSE}
+
+view(evals)
+
+evals %>%
+  ggplot(aes(
+    x = score
+  ))+
+  geom_histogram(color = "white")+
+  labs(
+    x = "Score",
+    y = NULL,
+    title = "Distribution of Scores",
+    subtitle = "Average professor evaluation score: (1) very unsatisfactory - (5) excellent"
+  )
+
+skewness(evals$score)
+median(evals$score)
+mean(evals$score)
+
 ```
 
-## Exercise 2
+This distribution appears to be negatively skewed (-.699), with the majority of the scores falling above four (median = 4.3, mean = 4.17)
+
+
+``` {r rating and beauty relationship, message = FALSE}
+
+attractive_score <- evals %>%
+  ggplot(aes(
+    x = score,
+    y = bty_avg
+  ))+
+  labs(
+    x = "Score",
+    y = "Beauty rating",
+    title = "Relationship between professor rating and attractiveness",
+    subtitle = "Average professor evaluation score: (1) very unsatisfactory - (5) excellent"
+  )
+
+attractive_score + geom_smooth(se = FALSE, color = "black", span = 1)
+
+```
+
+Based on this graph, I would say there is a positive relationship between professor ratings and perceived attractiveness.
+
+### Replication with geom_jitter()
+
+I changed the visualization to use geom_point() instead of geom_smooth(), which makes using geom_jitter() understandable.
+
+``` {r updated rating and beauty relationship, message = FALSE}
+
+attractive_score + geom_point() + geom_smooth(se = FALSE, color = "black", span = .5)
+
+attractive_score + geom_jitter(width = .05) + geom_smooth(se = FALSE, color = "black", span = .5)
+
+```
+
+geom_jitter() can be extremely useful in visualizing the relationship between a continuous variable and a discrete variable (i.e. a likert scale). The scatterplot utilizing geom_point() can be visually misleading, as you cannot tell if data overlap.
+
+## Linear Regression with a numerical predictor
 
 *Provide your answer here.*  
 Add code chunks as needed.
