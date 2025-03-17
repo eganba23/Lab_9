@@ -1,3 +1,7 @@
-# lab-09-slr-course-evals
+# UNDER CONSTRUCTION
 
-materials for lab
+# Lab 9 - Modeling professor attractiveness and course evaluations
+
+link to assignment: https://datascience4psych.github.io/DataScience4Psych/lab09.html
+
+Plotting regressions
