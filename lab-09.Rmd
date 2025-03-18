@@ -80,13 +80,13 @@ geom_jitter() can be extremely useful in visualizing the relationship between a 
 
 ## Linear Regression with a numerical predictor
 
-```{r replot with regression, message = false}
+```{r replot with regression, message = FALSE}
 
 m_bty <- lm(score ~ bty_avg, data = evals)
 
 summary(m_bty)
 
-  attractive_score + 
+attractive_score + 
   geom_jitter(width = .05, alpha = .6)+ 
   geom_smooth(se = FALSE, color = "blue", span = .5)+
   geom_abline(intercept = 3.88034, slope = 0.06664, color ="orange", size = 1)
@@ -110,7 +110,7 @@ summary(m_gen)
 
 ```
 
-The regression equation should be y = 4.09 + .142x, where y is score and x = gender.
+The regression equation should be y = 4.09 + .142x, where y is score and x is gender.
 
 ```{r graph gender regression}
 
@@ -142,23 +142,49 @@ summary(m_rank)
 
 ```
 
-The regression equation should be y = 4.28 - .130x, where y is score and x = gender.
+Regression equations:
+y = 4.28 - .130x, where y is score and x is signifying either teaching or tenure track.
+y = 4.28 - .145x, where y is score and x is signifying either teaching or tenure.
 
 
-```{r graph rank}
+```{r new relevel rank}
 
+evals$rank_relevel <- relevel(evals$rank, ref = "tenure track")
+
+m_rank_relevel <- lm(score ~ rank_relevel, data = evals)
+
+m_rank_relevel
+summary(m_rank_relevel)
+
+```
+
+
+Regression equations:
+y = 4.155 + .130x, where y is score and x is signifying either tenure track or teaching
+y = 4.155 - .016x, where y is score and x is signifying either tenure track or tenured
+
+R squared is .007, an indication of the degree to which individuals scores on one variable can predict the scores on the other. In this case, rank of instructors can only account for about .7% of the variance explained by instructor scores. I would summarize this as "rank doesn't affect evaluation."
+
+
+```{r rank dichotomy}
+
+evals <- evals %>%
+  mutate(tenure_eligible = case_when(
+    rank %in% c("tenure track", "tenured") ~ "yes",
+    rank == "teaching" ~ "no"
+  ))
+
+m_tenure_eligible <- lm(score ~ tenure_eligible, data = evals)
+
+m_tenure_eligible
+summary(m_tenure_eligible)
 
 
 ```
 
+The regression equation should be y = 4.28 - .141x, where y is score and x is tenure eligibility. This tells us the change from non-tenure track to tenure track equates for a .141 decrease in instructor score. The R squared value is .009. This means that tenure eligibility essentially does not explain variation in professor ratings.
+
+
 picture
 google to find cool stuff (digital cv, etc.)
 create website includes all my work
-
-
-
-
-
-## Hint
-
-For Exercise 12, the `relevel()` function can be helpful!
